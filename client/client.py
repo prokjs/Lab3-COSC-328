@@ -46,9 +46,7 @@ while (True):
     s = input("Message: ") 
     sock.sendall(s.encode("utf-8")) 
     data = sock.recv(1024).decode("utf-8") 
-    if data == "QUIT": 
-        break 
-    elif data.startswith('OPEN'):
+    if data.startswith('OPEN'):
         port = int(data.split()[1])
         open_connection(port)
     elif data.startswith('GET'):
@@ -64,10 +62,6 @@ while (True):
     else:
         print("Invalid data.")
     print ("Received: ", data) 
-
-    
-    
-
     
 sock.close()  
  
