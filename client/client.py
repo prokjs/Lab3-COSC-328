@@ -18,18 +18,21 @@ def get_file(filename):
     if data.startswith('ERROR'):
         print(data)
     else:
-        with open(filename, 'wb') as f:
-            f.write(data.encode('utf-8'))
+        with open(filename, 'x') as f:
+            f = open(filename, "w")
+            f.write(data)
+            f.close()
             print('Received', filename)
 
 def put_file(filename):
     try:
         with open(filename, 'rb') as f:
-            data = f.read()
-            sock.sendall(('PUT ' + filename).encode('utf-8') + data)
+            file_data = f.read()
+            sock.sendall(('PUT ' + filename).encode('utf-8') + file_data)
             print('Sent', filename)
     except FileNotFoundError:
         print("File not found.")
+
 
 def close_connection():
     sock.sendall('CLOSE'.encode('utf-8'))
@@ -47,13 +50,13 @@ while (True):
     sock.sendall(s.encode("utf-8")) 
     data = sock.recv(1024).decode("utf-8") 
     if data.startswith('OPEN'):
-        port = int(data.split()[1])
+        port = int(data[5:])
         open_connection(port)
     elif data.startswith('GET'):
-        filename = data.split()[1]
+        filename = data[4:]
         get_file(filename)
     elif data.startswith('PUT'):
-        filename = data.split()[1]
+        filename = data[4:]
         put_file(filename)
     elif data == 'CLOSE':
         close_connection()
